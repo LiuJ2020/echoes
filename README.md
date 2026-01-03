@@ -1,109 +1,209 @@
-<a href="https://demo-nextjs-with-supabase.vercel.app/">
-  <img alt="Next.js and Supabase Starter Kit - the fastest way to build apps with Next.js and Supabase" src="https://demo-nextjs-with-supabase.vercel.app/opengraph-image.png">
-  <h1 align="center">Next.js and Supabase Starter Kit</h1>
-</a>
+# Echoes — A Voice Bridge Between Past and Present Selves
 
-<p align="center">
- The fastest way to build apps with Next.js and Supabase
-</p>
+Echoes lets you speak to your past self through emotionally intelligent, voice-based AI. Record reflections, ask questions, and hear your own wisdom in your own voice.
 
-<p align="center">
-  <a href="#features"><strong>Features</strong></a> ·
-  <a href="#demo"><strong>Demo</strong></a> ·
-  <a href="#deploy-to-vercel"><strong>Deploy to Vercel</strong></a> ·
-  <a href="#clone-and-run-locally"><strong>Clone and run locally</strong></a> ·
-  <a href="#feedback-and-issues"><strong>Feedback and issues</strong></a>
-  <a href="#more-supabase-examples"><strong>More Examples</strong></a>
-</p>
-<br/>
+## 🌟 Features
 
-## Features
+- **Voice Recording**: Capture reflections through natural voice recordings
+- **AI Analysis**: Gemini AI extracts emotional patterns, themes, and key insights
+- **Semantic Search**: Query your past reflections with natural language
+- **Voice Synthesis**: Hear your reflections in your own voice using ElevenLabs
+- **Timeline View**: See your growth over time with emotional trends
+- **Privacy-First**: All data is stored securely with Row Level Security
 
-- Works across the entire [Next.js](https://nextjs.org) stack
-  - App Router
-  - Pages Router
-  - Proxy
-  - Client
-  - Server
-  - It just works!
-- supabase-ssr. A package to configure Supabase Auth to use cookies
-- Password-based authentication block installed via the [Supabase UI Library](https://supabase.com/ui/docs/nextjs/password-based-auth)
-- Styling with [Tailwind CSS](https://tailwindcss.com)
-- Components with [shadcn/ui](https://ui.shadcn.com/)
-- Optional deployment with [Supabase Vercel Integration and Vercel deploy](#deploy-your-own)
-  - Environment variables automatically assigned to Vercel project
+## 🛠️ Tech Stack
 
-## Demo
+- **Frontend**: Next.js 15 (App Router), TypeScript, Tailwind CSS, shadcn/ui
+- **Backend**: Next.js API Routes, Supabase (PostgreSQL + Storage)
+- **AI**: Google Gemini (transcription, analysis, embeddings), pgvector (semantic search)
+- **Voice**: ElevenLabs (voice cloning & text-to-speech)
 
-You can view a fully working demo at [demo-nextjs-with-supabase.vercel.app](https://demo-nextjs-with-supabase.vercel.app/).
+## 📋 Prerequisites
 
-## Deploy to Vercel
+Before you begin, ensure you have:
 
-Vercel deployment will guide you through creating a Supabase account and project.
+- Node.js 20+ installed
+- A Supabase account (free tier works)
+- A Google Gemini API key ([Get it here](https://aistudio.google.com/apikey))
+- An ElevenLabs API key ([Get it here](https://elevenlabs.io/app/settings/api-keys))
 
-After installation of the Supabase integration, all relevant environment variables will be assigned to the project so the deployment is fully functioning.
+## 🚀 Quick Start
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fvercel%2Fnext.js%2Ftree%2Fcanary%2Fexamples%2Fwith-supabase&project-name=nextjs-with-supabase&repository-name=nextjs-with-supabase&demo-title=nextjs-with-supabase&demo-description=This+starter+configures+Supabase+Auth+to+use+cookies%2C+making+the+user%27s+session+available+throughout+the+entire+Next.js+app+-+Client+Components%2C+Server+Components%2C+Route+Handlers%2C+Server+Actions+and+Middleware.&demo-url=https%3A%2F%2Fdemo-nextjs-with-supabase.vercel.app%2F&external-id=https%3A%2F%2Fgithub.com%2Fvercel%2Fnext.js%2Ftree%2Fcanary%2Fexamples%2Fwith-supabase&demo-image=https%3A%2F%2Fdemo-nextjs-with-supabase.vercel.app%2Fopengraph-image.png)
+### 1. Clone and Install
 
-The above will also clone the Starter kit to your GitHub, you can clone that locally and develop locally.
+\`\`\`bash
+git clone <your-repo-url>
+cd echoes
+npm install
+\`\`\`
 
-If you wish to just develop locally and not deploy to Vercel, [follow the steps below](#clone-and-run-locally).
+### 2. Set Up Supabase
 
-## Clone and run locally
+1. Create a new project at [supabase.com](https://supabase.com)
+2. Go to **Project Settings > API** and copy:
+   - Project URL
+   - Anon/Public key
 
-1. You'll first need a Supabase project which can be made [via the Supabase dashboard](https://database.new)
+### 3. Run Database Migration
 
-2. Create a Next.js app using the Supabase Starter template npx command
+1. Go to your Supabase dashboard → **SQL Editor**
+2. Open \`supabase-migration.sql\` from this project
+3. Copy and paste the entire contents
+4. Click **Run** to create all tables, indexes, storage buckets, and functions
 
-   ```bash
-   npx create-next-app --example with-supabase with-supabase-app
-   ```
+This migration creates:
+- `reflections` table (voice recordings + analysis)
+- `voice_profiles` table (ElevenLabs voice IDs)
+- Storage buckets for audio files
+- Vector similarity search function
+- Row Level Security policies
 
-   ```bash
-   yarn create next-app --example with-supabase with-supabase-app
-   ```
+### 4. Configure Environment Variables
 
-   ```bash
-   pnpm create next-app --example with-supabase with-supabase-app
-   ```
+Your \`.env.local\` should already have the Supabase credentials. Ensure it looks like this:
 
-3. Use `cd` to change into the app's directory
+### 5. Run the Development Server
 
-   ```bash
-   cd with-supabase-app
-   ```
+\`\`\`bash
+npm run dev
+\`\`\`
 
-4. Rename `.env.example` to `.env.local` and update the following:
+Open [http://localhost:3000](http://localhost:3000) to see the app.
 
-  ```env
-  NEXT_PUBLIC_SUPABASE_URL=[INSERT SUPABASE PROJECT URL]
-  NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=[INSERT SUPABASE PROJECT API PUBLISHABLE OR ANON KEY]
-  ```
-  > [!NOTE]
-  > This example uses `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, which refers to Supabase's new **publishable** key format.
-  > Both legacy **anon** keys and new **publishable** keys can be used with this variable name during the transition period. Supabase's dashboard may show `NEXT_PUBLIC_SUPABASE_ANON_KEY`; its value can be used in this example.
-  > See the [full announcement](https://github.com/orgs/supabase/discussions/29260) for more information.
+## 📖 User Flow
 
-  Both `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` can be found in [your Supabase project's API settings](https://supabase.com/dashboard/project/_?showConnect=true)
+### First Time Setup
 
-5. You can now run the Next.js local development server:
+1. **Sign Up**: Create an account at `/auth/sign-up`
+2. **Voice Onboarding** (Optional): Record 3-5 voice samples at `/onboarding` to clone your voice
+   - You can skip this and use a default narrator voice instead
+3. **Record First Reflection**: Go to `/record` and speak your first reflection
 
-   ```bash
-   npm run dev
-   ```
+### Daily Usage
 
-   The starter kit should now be running on [localhost:3000](http://localhost:3000/).
+1. **Record Reflections**: Visit `/record` anytime to capture thoughts
+   - Speak naturally for up to 3 minutes
+   - Transcription and analysis happen automatically
+2. **View Timeline**: See all reflections at `/timeline`
+   - Filter by emotion or theme
+   - See emotional trends over time
+3. **Ask Your Past Self**: Query reflections at `/query`
+   - Ask questions like "What have I learned about productivity?"
+   - Hear relevant past reflections in your own voice
 
-6. This template comes with the default shadcn/ui style initialized. If you instead want other ui.shadcn styles, delete `components.json` and [re-install shadcn/ui](https://ui.shadcn.com/docs/installation/next)
+## 🏗️ Project Structure
 
-> Check out [the docs for Local Development](https://supabase.com/docs/guides/getting-started/local-development) to also run Supabase locally.
+\`\`\`
+echoes/
+├── app/
+│   ├── (dashboard)/              # Protected dashboard routes
+│   │   ├── layout.tsx           # Dashboard navigation
+│   │   ├── record/page.tsx      # Voice recording page
+│   │   ├── timeline/page.tsx    # Reflection timeline
+│   │   ├── query/page.tsx       # Ask past self
+│   │   └── onboarding/page.tsx  # Voice profile setup
+│   ├── api/
+│   │   ├── reflections/
+│   │   │   ├── upload/route.ts  # Upload + transcribe
+│   │   │   ├── analyze/route.ts # Gemini analysis
+│   │   │   ├── list/route.ts    # Fetch reflections
+│   │   │   └── query/route.ts   # Semantic search
+│   │   └── voice/
+│   │       ├── clone/route.ts   # Voice cloning
+│   │       └── synthesize/route.ts # TTS generation
+│   ├── auth/                     # Supabase auth pages
+│   └── page.tsx                  # Homepage
+├── components/
+│   ├── voice/
+│   │   ├── VoiceRecorder.tsx    # Recording UI
+│   │   └── AudioPlayer.tsx      # Playback UI
+│   ├── reflections/
+│   │   ├── ReflectionCard.tsx   # Single reflection
+│   │   └── ReflectionTimeline.tsx # Timeline view
+│   └── query/
+│       ├── QueryInterface.tsx    # Search input
+│       └── ReflectionResponse.tsx # Search results
+├── lib/
+│   ├── api/
+│   │   ├── gemini.ts            # Gemini client
+│   │   └── elevenlabs.ts        # ElevenLabs client
+│   └── supabase/                # Supabase clients
+├── types/
+│   └── index.ts                  # TypeScript types
+└── supabase-migration.sql       # Database schema
+\`\`\`
 
-## Feedback and issues
+## 🔑 Key Technical Decisions
 
-Please file feedback and issues over on the [Supabase GitHub org](https://github.com/supabase/supabase/issues/new/choose).
+### 1. Transcription: Gemini Audio Understanding
+- **Why**: Single API for transcription + analysis, simpler architecture
+- **Trade-off**: Slightly less accurate than Whisper, but sufficient for MVP
 
-## More Supabase examples
+### 2. Voice Cloning: ElevenLabs
+- **Why**: Best quality, authentic "past self" experience
+- **Trade-off**: Takes 5-10 minutes to process, but worth it for demo impact
 
-- [Next.js Subscription Payments Starter](https://github.com/vercel/nextjs-subscription-payments)
-- [Cookie-based Auth and the Next.js 13 App Router (free course)](https://youtube.com/playlist?list=PL5S4mPUpp4OtMhpnp93EFSo42iQ40XjbF)
-- [Supabase Auth and the Next.js App Router](https://github.com/supabase/supabase/tree/master/examples/auth/nextjs)
+### 3. Vector Search: pgvector in Supabase
+- **Why**: Native PostgreSQL, no external service, fast for <1000 reflections
+- **Trade-off**: Manual index management, but simple for MVP scale
+
+### 4. Recording: Client-side MediaRecorder API
+- **Why**: No streaming infrastructure, works in all browsers
+- **Trade-off**: Limited audio format control, but webm is acceptable
+
+## 🐛 Troubleshooting
+
+### Microphone Permission Denied
+- Check browser permissions (usually top-left in address bar)
+- Try Chrome or Edge if using Safari
+
+### Voice Cloning Fails
+- Ensure you recorded at least 3 samples (1 minute each)
+- Check ElevenLabs account quota
+- Fallback to default narrator voice is automatic
+
+### Transcription Errors
+- Gemini works best with clear audio
+- Avoid background noise when recording
+- Check Gemini API quota
+
+### Vector Search Not Working
+- Ensure you ran the full database migration
+- Check that `pgvector` extension is enabled in Supabase
+- Verify the `match_reflections` function was created
+
+## 🎯 Demo Tips
+
+### For Hackathon Judges
+
+1. **Pre-populate Data**: Record 3-5 reflections before the demo
+2. **Voice Clone Ready**: Have voice profile already created
+3. **The Wow Moment**: Query "What have I learned?" and play the voice response
+4. **Show Timeline**: Display emotional trends and themes
+
+### Demo Script (2 Minutes)
+
+1. **Login** (5 sec) — Show existing timeline
+2. **Record reflection** (30 sec) — "Today I realized..."
+3. **Show transcript** (5 sec) — Appears automatically
+4. **Navigate to query** (10 sec) — Click "Ask Past Self"
+5. **Ask question** (20 sec) — "What did I learn about...?"
+6. **THE MOMENT** (60 sec) — Past reflection plays in user's voice
+   - *This is when judges feel something*
+
+## 📝 License
+
+MIT
+
+## 🙏 Acknowledgments
+
+Built with:
+- [Next.js](https://nextjs.org/)
+- [Supabase](https://supabase.com/)
+- [Google Gemini](https://ai.google.dev/)
+- [ElevenLabs](https://elevenlabs.io/)
+- [shadcn/ui](https://ui.shadcn.com/)
+
+---
+
+**Echoes** — Where your past self becomes your wisest guide
