@@ -94,7 +94,7 @@ CREATE POLICY "Users can update their own voice profile"
 -- ============================================
 INSERT INTO storage.buckets (id, name, public)
 VALUES
-  ('reflections', 'reflections', false),
+  ('reflections', 'reflections', true),
   ('voice-samples', 'voice-samples', false)
 ON CONFLICT (id) DO NOTHING;
 
