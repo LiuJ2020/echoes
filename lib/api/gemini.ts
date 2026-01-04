@@ -18,7 +18,7 @@ export async function transcribeAudio(
   mimeType: string
 ): Promise<string> {
   try {
-    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
 
     const result = await model.generateContent([
       {
@@ -49,7 +49,7 @@ export async function analyzeReflection(
   transcript: string
 ): Promise<AnalysisResult> {
   try {
-    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
 
     const prompt = `You are analyzing a personal voice reflection. Extract the following information from this transcript:
 
@@ -107,7 +107,7 @@ Only extract what's actually present. Be grounded and non-judgmental. Return ONL
  */
 export async function generateEmbedding(text: string): Promise<number[]> {
   try {
-    const model = genAI.getGenerativeModel({ model: 'text-embedding-004' });
+    const model = genAI.getGenerativeModel({ model: 'gemini-embedding-001' });
 
     const result = await model.embedContent(text);
     const embedding = result.embedding;
