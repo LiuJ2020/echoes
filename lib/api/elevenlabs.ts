@@ -107,6 +107,38 @@ export async function deleteVoice(voiceId: string): Promise<void> {
 }
 
 /**
+ * Transcribe audio using ElevenLabs Speech-to-Text API
+ * @param audioBuffer Audio file as Buffer
+ * @param mimeType MIME type of the audio (e.g., 'audio/webm', 'audio/mp3')
+ * @returns Transcribed text
+ */
+export async function transcribeAudio(
+  audioBuffer: Buffer,
+  mimeType: string
+): Promise<string> {
+  try {
+    // Convert buffer to File object for the API
+    const blob = new Blob([new Uint8Array(audioBuffer)], { type: mimeType });
+    const audioFile = new File([blob], 'audio.webm', { type: mimeType });
+
+    const result = await client.speechToText.convert({
+      file: audioFile,
+      modelId: 'scribe_v1',
+    });
+
+    // The response can be different types, but for standard requests we get SpeechToTextChunkResponseModel
+    if ('text' in result) {
+      return result.text.trim();
+    }
+
+    throw new Error('Unexpected response format from ElevenLabs');
+  } catch (error) {
+    console.error('ElevenLabs transcription error:', error);
+    throw new Error('Failed to transcribe audio with ElevenLabs');
+  }
+}
+
+/**
  * Get a default narrator voice ID (fallback if voice cloning fails)
  * Using Rachel - a warm, friendly female voice
  */

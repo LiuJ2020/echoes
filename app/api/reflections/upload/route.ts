@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
-import { transcribeAudio } from '@/lib/api/gemini';
+// Using ElevenLabs for transcription - favored for higher accuracy and better audio quality handling
+import { transcribeAudio } from '@/lib/api/elevenlabs';
+// Alternative: Gemini transcription (kept for reference, currently not in use)
+// import { transcribeAudio } from '@/lib/api/gemini';
 
 export async function POST(request: NextRequest) {
   try {
@@ -55,7 +58,7 @@ export async function POST(request: NextRequest) {
       data: { publicUrl },
     } = supabase.storage.from('reflections').getPublicUrl(fileName);
 
-    // Transcribe audio using Gemini
+    // Transcribe audio using ElevenLabs (preferred over Gemini for better transcription quality)
     let transcript: string;
     try {
       transcript = await transcribeAudio(buffer, 'audio/webm');
