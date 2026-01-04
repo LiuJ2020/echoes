@@ -1,4 +1,4 @@
-import { ElevenLabsClient } from 'elevenlabs-js';
+import { ElevenLabsClient } from '@elevenlabs/elevenlabs-js';
 
 if (!process.env.ELEVENLABS_API_KEY) {
   throw new Error('ELEVENLABS_API_KEY is not set in environment variables');
@@ -9,7 +9,7 @@ const client = new ElevenLabsClient({
 });
 
 /**
- * Create a voice clone from audio samples
+ * Create a voice clone from audio samples using Instant Voice Cloning (IVC)
  * @param name Display name for the voice
  * @param audioFiles Array of audio file buffers
  * @param description Optional description of the voice
@@ -23,17 +23,18 @@ export async function createVoiceClone(
   try {
     // Convert buffers to File objects
     const files = audioFiles.map((buffer, index) => {
-      const blob = new Blob([buffer], { type: 'audio/mpeg' });
+      const blob = new Blob([new Uint8Array(buffer)], { type: 'audio/mpeg' });
       return new File([blob], `sample-${index}.mp3`, { type: 'audio/mpeg' });
     });
 
-    const voice = await client.voices.add({
+    const voice = await client.voices.ivc.create({
       name,
       files,
       description: description || `Voice profile for ${name}`,
+      removeBackgroundNoise: true,
     });
 
-    return voice.voice_id;
+    return voice.voiceId;
   } catch (error) {
     console.error('Voice cloning error:', error);
     throw new Error('Failed to create voice clone');
@@ -53,19 +54,21 @@ export async function synthesizeSpeech(
   try {
     const audio = await client.textToSpeech.convert(voiceId, {
       text,
-      model_id: 'eleven_monolingual_v1',
-      voice_settings: {
+      modelId: 'eleven_monolingual_v1',
+      voiceSettings: {
         stability: 0.5,
-        similarity_boost: 0.75,
-        style: 0.0,
-        use_speaker_boost: true,
+        similarityBoost: 0.75,
       },
     });
 
-    // Convert the audio stream to buffer
+    // Convert the ReadableStream to buffer
+    const reader = audio.getReader();
     const chunks: Uint8Array[] = [];
-    for await (const chunk of audio) {
-      chunks.push(chunk);
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      chunks.push(value);
     }
 
     return Buffer.concat(chunks);

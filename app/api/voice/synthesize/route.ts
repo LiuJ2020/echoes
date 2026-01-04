@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { synthesizeSpeechWithFallback } from '@/lib/api/elevenlabs';
 
+
 export async function POST(request: NextRequest) {
   try {
     const { reflectionId, text } = await request.json();
@@ -72,7 +73,7 @@ export async function POST(request: NextRequest) {
     if (uploadError) {
       console.error('Upload error:', uploadError);
       // Return audio directly if upload fails
-      return new NextResponse(audioBuffer, {
+      return new NextResponse(new Uint8Array(audioBuffer), {
         headers: {
           'Content-Type': 'audio/mpeg',
           'Content-Length': audioBuffer.length.toString(),
