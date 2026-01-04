@@ -59,3 +59,29 @@ export interface VoiceCloneProgress {
   voiceId?: string;
   error?: string;
 }
+
+export interface ChatMessage {
+  id: string;
+  role: 'user' | 'assistant';
+  content: string;
+  audioUrl?: string;
+  referencedReflections?: ReflectionReference[];
+  timestamp: Date;
+}
+
+export interface ReflectionReference {
+  id: string;
+  transcript: string;
+  audioUrl: string;
+  createdAt: string;
+  emotionalTags: string[];
+  themes: string[];
+  similarityScore: number;
+  citationIndex: number;
+}
+
+export interface GeminiResponseWithSearch {
+  responseWithCitations: string;
+  cleanText: string;
+  referencedReflections: ReflectionReference[];
+}

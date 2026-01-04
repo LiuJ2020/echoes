@@ -54,7 +54,7 @@ export async function synthesizeSpeech(
   try {
     const audio = await client.textToSpeech.convert(voiceId, {
       text,
-      modelId: 'eleven_monolingual_v1',
+      modelId: 'eleven_flash_v2_5',
       voiceSettings: {
         stability: 0.5,
         similarityBoost: 0.75,
