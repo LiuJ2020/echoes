@@ -218,152 +218,182 @@ export function VoiceRecorder({
   return (
     <>
       <style dangerouslySetInnerHTML={{ __html: thumbStyles }} />
-      <Card className="p-6 space-y-4">
-        <div className="flex flex-col items-center space-y-4">
-        {/* Timer Display */}
-        <div className="text-4xl font-mono font-bold">
-          {formatTime(duration)}
-          <span className="text-sm text-muted-foreground ml-2">
-            / {formatMaxTime(maxDurationSeconds)}
-          </span>
-        </div>
 
-        {/* Error Message */}
-        {error && (
-          <div className="text-sm text-red-500 text-center">{error}</div>
-        )}
+      {/* Recording Controls */}
+      {!isRecording && !audioUrl ? (
+        <div className="flex flex-col items-center space-y-8">
+          {/* Interactive Microphone with breathing rings - matching home page */}
+          <div className="relative">
+            {/* Breathing rings */}
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="w-48 h-48 rounded-full bg-primary/10 animate-breathe" />
+            </div>
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="w-64 h-64 rounded-full bg-primary/5 animate-breathe-slow" />
+            </div>
 
-        {/* Recording Controls */}
-        {!isRecording && !audioUrl && (
-          <Button
-            onClick={startRecording}
-            size="lg"
-            className="w-32 h-32 rounded-full"
-            variant="default"
-          >
-            <Mic className="h-12 w-12" />
-          </Button>
-        )}
-
-        {isRecording && (
-          <div className="flex gap-4">
-            {!isPaused ? (
-              <>
-                <Button
-                  onClick={pauseRecording}
-                  size="lg"
-                  variant="outline"
-                  className="rounded-full"
-                >
-                  <Pause className="h-6 w-6" />
-                </Button>
-                <Button
-                  onClick={stopRecording}
-                  size="lg"
-                  variant="destructive"
-                  className="rounded-full"
-                >
-                  <Square className="h-6 w-6" />
-                </Button>
-              </>
-            ) : (
-              <>
-                <Button
-                  onClick={resumeRecording}
-                  size="lg"
-                  variant="default"
-                  className="rounded-full"
-                >
-                  <Play className="h-6 w-6" />
-                </Button>
-                <Button
-                  onClick={stopRecording}
-                  size="lg"
-                  variant="destructive"
-                  className="rounded-full"
-                >
-                  <Square className="h-6 w-6" />
-                </Button>
-              </>
-            )}
+            {/* Central microphone button */}
+            <div className="relative z-10 flex items-center justify-center">
+              <button
+                onClick={startRecording}
+                className="w-40 h-40 rounded-full bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center shadow-2xl hover:shadow-3xl transition-all hover:scale-105 cursor-pointer group"
+              >
+                <Mic className="h-20 w-20 text-primary-foreground group-hover:scale-110 transition-transform" />
+              </button>
+            </div>
           </div>
-        )}
 
-        {/* Playback Controls */}
-        {audioUrl && !isRecording && (
-          <div className="w-full space-y-4">
-            <audio
-              ref={audioRef}
-              src={audioUrl}
-              className="hidden"
-            />
+          {/* Status text */}
+          <div className="text-center space-y-2">
+            <p className="text-lg text-muted-foreground">
+              Click to start recording your reflection
+            </p>
+            <p className="text-sm text-muted-foreground">
+              Max duration: {formatMaxTime(maxDurationSeconds)}
+            </p>
+          </div>
 
-            <div className="flex flex-col items-center gap-4 w-full">
-              {/* Play/Pause Button */}
-              <div className="flex justify-center">
-                {!isPlaying ? (
-                  <Button
-                    onClick={playAudio}
-                    size="lg"
-                    variant="outline"
-                    className="rounded-full"
-                  >
-                    <Play className="h-6 w-6" />
-                  </Button>
+          {/* Error Message */}
+          {error && (
+            <div className="text-sm text-red-500 text-center">{error}</div>
+          )}
+        </div>
+      ) : (
+        <Card className="p-6 space-y-4">
+          <div className="flex flex-col items-center space-y-4">
+            {/* Timer Display */}
+            <div className="text-4xl font-mono font-bold">
+              {formatTime(duration)}
+              <span className="text-sm text-muted-foreground ml-2">
+                / {formatMaxTime(maxDurationSeconds)}
+              </span>
+            </div>
+
+            {/* Error Message */}
+            {error && (
+              <div className="text-sm text-red-500 text-center">{error}</div>
+            )}
+
+            {/* Recording Controls */}
+            {isRecording && (
+              <div className="flex gap-4">
+                {!isPaused ? (
+                  <>
+                    <Button
+                      onClick={pauseRecording}
+                      size="lg"
+                      variant="outline"
+                      className="rounded-full"
+                    >
+                      <Pause className="h-6 w-6" />
+                    </Button>
+                    <Button
+                      onClick={stopRecording}
+                      size="lg"
+                      variant="destructive"
+                      className="rounded-full"
+                    >
+                      <Square className="h-6 w-6" />
+                    </Button>
+                  </>
                 ) : (
-                  <Button
-                    onClick={pauseAudio}
-                    size="lg"
-                    variant="outline"
-                    className="rounded-full"
-                  >
-                    <Pause className="h-6 w-6" />
-                  </Button>
+                  <>
+                    <Button
+                      onClick={resumeRecording}
+                      size="lg"
+                      variant="default"
+                      className="rounded-full"
+                    >
+                      <Play className="h-6 w-6" />
+                    </Button>
+                    <Button
+                      onClick={stopRecording}
+                      size="lg"
+                      variant="destructive"
+                      className="rounded-full"
+                    >
+                      <Square className="h-6 w-6" />
+                    </Button>
+                  </>
                 )}
               </div>
+            )}
 
-              {/* Progress Bar */}
-              <div className="w-full space-y-2">
-                <input
-                  type="range"
-                  min="0"
-                  max={playbackDuration || 0}
-                  step="0.01"
-                  value={playbackTime}
-                  onChange={handleSeek}
-                  className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700 audio-seeker"
-                  style={{
-                    background: `linear-gradient(to right, hsl(var(--primary)) 0%, hsl(var(--primary)) ${
-                      (playbackTime / playbackDuration) * 100
-                    }%, hsl(var(--muted)) ${
-                      (playbackTime / playbackDuration) * 100
-                    }%, hsl(var(--muted)) 100%)`,
-                  }}
+            {/* Playback Controls */}
+            {audioUrl && !isRecording && (
+              <div className="w-full space-y-4">
+                <audio
+                  ref={audioRef}
+                  src={audioUrl}
+                  className="hidden"
                 />
 
-                {/* Time Display */}
-                <div className="flex justify-between text-xs text-muted-foreground">
-                  <span>{formatTime(playbackTime)}</span>
-                  <span>{formatTime(playbackDuration)}</span>
+                <div className="flex flex-col items-center gap-4 w-full">
+                  {/* Play/Pause Button */}
+                  <div className="flex justify-center">
+                    {!isPlaying ? (
+                      <Button
+                        onClick={playAudio}
+                        size="lg"
+                        variant="outline"
+                        className="rounded-full"
+                      >
+                        <Play className="h-6 w-6" />
+                      </Button>
+                    ) : (
+                      <Button
+                        onClick={pauseAudio}
+                        size="lg"
+                        variant="outline"
+                        className="rounded-full"
+                      >
+                        <Pause className="h-6 w-6" />
+                      </Button>
+                    )}
+                  </div>
+
+                  {/* Progress Bar */}
+                  <div className="w-full space-y-2">
+                    <input
+                      type="range"
+                      min="0"
+                      max={playbackDuration || 0}
+                      step="0.01"
+                      value={playbackTime}
+                      onChange={handleSeek}
+                      className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700 audio-seeker"
+                      style={{
+                        background: `linear-gradient(to right, hsl(var(--primary)) 0%, hsl(var(--primary)) ${
+                          (playbackTime / playbackDuration) * 100
+                        }%, hsl(var(--muted)) ${
+                          (playbackTime / playbackDuration) * 100
+                        }%, hsl(var(--muted)) 100%)`,
+                      }}
+                    />
+
+                    {/* Time Display */}
+                    <div className="flex justify-between text-xs text-muted-foreground">
+                      <span>{formatTime(playbackTime)}</span>
+                      <span>{formatTime(playbackDuration)}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="text-center text-sm text-muted-foreground">
+                  Recording complete
                 </div>
               </div>
-            </div>
+            )}
 
-            <div className="text-center text-sm text-muted-foreground">
-              Recording complete
+            {/* Status Text */}
+            <div className="text-sm text-center text-muted-foreground">
+              {isRecording && !isPaused && 'Recording... Click pause or stop'}
+              {isRecording && isPaused && 'Paused - Click to resume'}
+              {audioUrl && !isRecording && 'Play your recording or submit below'}
             </div>
           </div>
-        )}
-
-        {/* Status Text */}
-        <div className="text-sm text-center text-muted-foreground">
-          {!isRecording && !audioUrl && 'Click to start recording your reflection'}
-          {isRecording && !isPaused && 'Recording... Click pause or stop'}
-          {isRecording && isPaused && 'Paused - Click to resume'}
-          {audioUrl && !isRecording && 'Play your recording or submit below'}
-        </div>
-      </div>
-    </Card>
+        </Card>
+      )}
     </>
   );
 }
