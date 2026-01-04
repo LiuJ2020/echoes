@@ -1,209 +1,120 @@
-# Echoes — A Voice Bridge Between Past and Present Selves
+# Echoes
 
-Echoes lets you speak to your past self through emotionally intelligent, voice-based AI. Record reflections, ask questions, and hear your own wisdom in your own voice.
+> Your past self is listening
 
-## 🌟 Features
+## Overview
 
-- **Voice Recording**: Capture reflections through natural voice recordings
-- **AI Analysis**: Gemini AI extracts emotional patterns, themes, and key insights
-- **Semantic Search**: Query your past reflections with natural language
-- **Voice Synthesis**: Hear your reflections in your own voice using ElevenLabs
-- **Timeline View**: See your growth over time with emotional trends
-- **Privacy-First**: All data is stored securely with Row Level Security
+**Echoes** is an AI-powered personal reflection platform that helps users capture and revisit their thoughts through voice. Users record voice reflections, which are automatically transcribed and analyzed by AI to extract emotional patterns, themes, and insights. Later, users can ask questions and receive personalized audio responses grounded in their past reflections—spoken in their own voice.
 
-## 🛠️ Tech Stack
+## Features
 
-- **Frontend**: Next.js 15 (App Router), TypeScript, Tailwind CSS, shadcn/ui
-- **Backend**: Next.js API Routes, Supabase (PostgreSQL + Storage)
-- **AI**: Google Gemini (transcription, analysis, embeddings), pgvector (semantic search)
-- **Voice**: ElevenLabs (voice cloning & text-to-speech)
+### Voice Recording
+Capture personal reflections (up to 3 minutes) through natural voice input. The intuitive interface makes it easy to record thoughts, lessons learned, and insights as they come to you.
 
-## 📋 Prerequisites
+### AI-Powered Analysis
+Each reflection is automatically analyzed to extract:
+- Emotional tags and sentiment scoring
+- Life themes and patterns
+- Key insights and takeaways
+- Semantic embeddings for intelligent search
 
-Before you begin, ensure you have:
+### Growth Timeline
+Visual chronological timeline showing your reflections with emotional and thematic patterns over time. Track your personal growth and see how your thoughts evolve.
 
-- Node.js 20+ installed
-- A Supabase account (free tier works)
-- A Google Gemini API key ([Get it here](https://aistudio.google.com/apikey))
-- An ElevenLabs API key ([Get it here](https://elevenlabs.io/app/settings/api-keys))
+### Query Your Past
+Ask questions and receive AI-synthesized audio responses in your own voice, citing relevant past reflections. Your past self literally speaks back to you with personalized insights.
 
-## 🚀 Quick Start
+## Tech Stack
 
-### 1. Clone and Install
+### Frontend
+- **Next.js 15** with React 19 and TypeScript
+- **Tailwind CSS** for styling
+- **Radix UI** component library
+- **Recharts** for data visualization
+- **WaveSurfer.js** for audio waveform display
+- **Lucide React** for icons
 
-\`\`\`bash
-git clone <your-repo-url>
+### Backend & Infrastructure
+- **Next.js API Routes** (serverless functions)
+- **Vercel** hosting
+- **Supabase** for authentication, PostgreSQL database, and file storage
+
+### Database
+- **Supabase PostgreSQL** with pgvector extension
+- **Vector embeddings** (768-dimensional) for semantic search
+- **Row-level security** for data privacy
+
+### AI/ML Services
+- **ElevenLabs** - Voice transcription and text-to-speech with voice cloning
+- **Google Gemini 2.5 Flash** - Transcript analysis, insight extraction, and embeddings generation
+- **pgvector** - Vector similarity search for finding relevant reflections
+
+## Architecture
+
+The application follows a serverless architecture with these key patterns:
+
+- **Serverless Backend** - API routes deployed on Vercel
+- **Background Processing** - Fire-and-forget async analysis for fast uploads
+- **Vector-Based Search** - Semantic search using embeddings for intelligent reflection retrieval
+- **Voice Cloning** - Personalized response synthesis in user's own voice
+- **Web Audio API** - Browser-based audio recording
+
+## Getting Started
+
+### Prerequisites
+- Node.js 18+
+- Supabase account
+- ElevenLabs API key
+- Google Gemini API key
+
+### Installation
+
+1. Clone the repository
+```bash
+git clone <repository-url>
 cd echoes
+```
+
+2. Install dependencies
+```bash
 npm install
-\`\`\`
+```
 
-### 2. Set Up Supabase
+3. Set up environment variables
+Create a `.env.local` file with:
+```
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+ELEVENLABS_API_KEY=your_elevenlabs_api_key
+GEMINI_API_KEY=your_gemini_api_key
+```
 
-1. Create a new project at [supabase.com](https://supabase.com)
-2. Go to **Project Settings > API** and copy:
-   - Project URL
-   - Anon/Public key
-
-### 3. Run Database Migration
-
-1. Go to your Supabase dashboard → **SQL Editor**
-2. Open \`supabase-migration.sql\` from this project
-3. Copy and paste the entire contents
-4. Click **Run** to create all tables, indexes, storage buckets, and functions
-
-This migration creates:
-- `reflections` table (voice recordings + analysis)
-- `voice_profiles` table (ElevenLabs voice IDs)
-- Storage buckets for audio files
-- Vector similarity search function
-- Row Level Security policies
-
-### 4. Configure Environment Variables
-
-Your \`.env.local\` should already have the Supabase credentials. Ensure it looks like this:
-
-### 5. Run the Development Server
-
-\`\`\`bash
+4. Run the development server
+```bash
 npm run dev
-\`\`\`
+```
 
-Open [http://localhost:3000](http://localhost:3000) to see the app.
+5. Open [http://localhost:3000](http://localhost:3000)
 
-## 📖 User Flow
+## Application Flow
 
-### First Time Setup
+### Recording Flow
+1. User records voice reflection via browser
+2. Audio (WebM format) uploaded to Supabase Storage
+3. ElevenLabs transcribes the audio
+4. Transcript and metadata stored in PostgreSQL
+5. Background job triggers Gemini analysis (async)
+6. Gemini extracts: emotional tags, themes, key insights, sentiment, and embeddings
 
-1. **Sign Up**: Create an account at `/auth/sign-up`
-2. **Voice Onboarding** (Optional): Record 3-5 voice samples at `/onboarding` to clone your voice
-   - You can skip this and use a default narrator voice instead
-3. **Record First Reflection**: Go to `/record` and speak your first reflection
+### Query Flow
+1. User asks voice question on Query page
+2. Audio transcribed to text
+3. Query text converted to embedding via Gemini
+4. Vector similarity search finds 5 most relevant reflections
+5. Gemini generates grounded response citing relevant reflections
+6. ElevenLabs synthesizes response in user's cloned voice
+7. Audio returned with references to source reflections
 
-### Daily Usage
-
-1. **Record Reflections**: Visit `/record` anytime to capture thoughts
-   - Speak naturally for up to 3 minutes
-   - Transcription and analysis happen automatically
-2. **View Timeline**: See all reflections at `/timeline`
-   - Filter by emotion or theme
-   - See emotional trends over time
-3. **Ask Your Past Self**: Query reflections at `/query`
-   - Ask questions like "What have I learned about productivity?"
-   - Hear relevant past reflections in your own voice
-
-## 🏗️ Project Structure
-
-\`\`\`
-echoes/
-├── app/
-│   ├── (dashboard)/              # Protected dashboard routes
-│   │   ├── layout.tsx           # Dashboard navigation
-│   │   ├── record/page.tsx      # Voice recording page
-│   │   ├── timeline/page.tsx    # Reflection timeline
-│   │   ├── query/page.tsx       # Ask past self
-│   │   └── onboarding/page.tsx  # Voice profile setup
-│   ├── api/
-│   │   ├── reflections/
-│   │   │   ├── upload/route.ts  # Upload + transcribe
-│   │   │   ├── analyze/route.ts # Gemini analysis
-│   │   │   ├── list/route.ts    # Fetch reflections
-│   │   │   └── query/route.ts   # Semantic search
-│   │   └── voice/
-│   │       ├── clone/route.ts   # Voice cloning
-│   │       └── synthesize/route.ts # TTS generation
-│   ├── auth/                     # Supabase auth pages
-│   └── page.tsx                  # Homepage
-├── components/
-│   ├── voice/
-│   │   ├── VoiceRecorder.tsx    # Recording UI
-│   │   └── AudioPlayer.tsx      # Playback UI
-│   ├── reflections/
-│   │   ├── ReflectionCard.tsx   # Single reflection
-│   │   └── ReflectionTimeline.tsx # Timeline view
-│   └── query/
-│       ├── QueryInterface.tsx    # Search input
-│       └── ReflectionResponse.tsx # Search results
-├── lib/
-│   ├── api/
-│   │   ├── gemini.ts            # Gemini client
-│   │   └── elevenlabs.ts        # ElevenLabs client
-│   └── supabase/                # Supabase clients
-├── types/
-│   └── index.ts                  # TypeScript types
-└── supabase-migration.sql       # Database schema
-\`\`\`
-
-## 🔑 Key Technical Decisions
-
-### 1. Transcription: Gemini Audio Understanding
-- **Why**: Single API for transcription + analysis, simpler architecture
-- **Trade-off**: Slightly less accurate than Whisper, but sufficient for MVP
-
-### 2. Voice Cloning: ElevenLabs
-- **Why**: Best quality, authentic "past self" experience
-- **Trade-off**: Takes 5-10 minutes to process, but worth it for demo impact
-
-### 3. Vector Search: pgvector in Supabase
-- **Why**: Native PostgreSQL, no external service, fast for <1000 reflections
-- **Trade-off**: Manual index management, but simple for MVP scale
-
-### 4. Recording: Client-side MediaRecorder API
-- **Why**: No streaming infrastructure, works in all browsers
-- **Trade-off**: Limited audio format control, but webm is acceptable
-
-## 🐛 Troubleshooting
-
-### Microphone Permission Denied
-- Check browser permissions (usually top-left in address bar)
-- Try Chrome or Edge if using Safari
-
-### Voice Cloning Fails
-- Ensure you recorded at least 3 samples (1 minute each)
-- Check ElevenLabs account quota
-- Fallback to default narrator voice is automatic
-
-### Transcription Errors
-- Gemini works best with clear audio
-- Avoid background noise when recording
-- Check Gemini API quota
-
-### Vector Search Not Working
-- Ensure you ran the full database migration
-- Check that `pgvector` extension is enabled in Supabase
-- Verify the `match_reflections` function was created
-
-## 🎯 Demo Tips
-
-### For Hackathon Judges
-
-1. **Pre-populate Data**: Record 3-5 reflections before the demo
-2. **Voice Clone Ready**: Have voice profile already created
-3. **The Wow Moment**: Query "What have I learned?" and play the voice response
-4. **Show Timeline**: Display emotional trends and themes
-
-### Demo Script (2 Minutes)
-
-1. **Login** (5 sec) — Show existing timeline
-2. **Record reflection** (30 sec) — "Today I realized..."
-3. **Show transcript** (5 sec) — Appears automatically
-4. **Navigate to query** (10 sec) — Click "Ask Past Self"
-5. **Ask question** (20 sec) — "What did I learn about...?"
-6. **THE MOMENT** (60 sec) — Past reflection plays in user's voice
-   - *This is when judges feel something*
-
-## 📝 License
+## License
 
 MIT
-
-## 🙏 Acknowledgments
-
-Built with:
-- [Next.js](https://nextjs.org/)
-- [Supabase](https://supabase.com/)
-- [Google Gemini](https://ai.google.dev/)
-- [ElevenLabs](https://elevenlabs.io/)
-- [shadcn/ui](https://ui.shadcn.com/)
-
----
-
-**Echoes** — Where your past self becomes your wisest guide
