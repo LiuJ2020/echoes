@@ -4,9 +4,10 @@ import { useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { ChevronDown, ChevronUp, Play } from 'lucide-react';
+import { ChevronDown, ChevronUp } from 'lucide-react';
 import { format } from 'date-fns';
 import type { Reflection } from '@/types';
+import { CompactAudioPlayer } from '@/components/voice/CompactAudioPlayer';
 
 interface ReflectionCardProps {
   reflection: Reflection;
@@ -16,10 +17,10 @@ export function ReflectionCard({ reflection }: ReflectionCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const getSentimentColor = (score: number | null) => {
-    if (score === null) return 'bg-gray-500';
-    if (score > 0.3) return 'bg-green-500';
-    if (score < -0.3) return 'bg-red-500';
-    return 'bg-yellow-500';
+    if (score === null) return 'bg-muted-foreground';
+    if (score > 0.3) return 'bg-primary';
+    if (score < -0.3) return 'bg-destructive';
+    return 'bg-muted-foreground/70';
   };
 
   const getSentimentLabel = (score: number | null) => {
@@ -102,6 +103,13 @@ export function ReflectionCard({ reflection }: ReflectionCardProps) {
         </div>
       </div>
 
+      {/* Audio Playback */}
+      {reflection.audio_url && (
+        <div className="pt-2">
+          <CompactAudioPlayer audioUrl={reflection.audio_url} />
+        </div>
+      )}
+
       {/* Actions */}
       <div className="flex items-center gap-4 pt-2">
         <Button
@@ -121,20 +129,6 @@ export function ReflectionCard({ reflection }: ReflectionCardProps) {
             </>
           )}
         </Button>
-
-        {reflection.audio_url && (
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => {
-              const audio = new Audio(reflection.audio_url);
-              audio.play();
-            }}
-          >
-            <Play className="h-4 w-4 mr-1" />
-            Play Original
-          </Button>
-        )}
       </div>
     </Card>
   );
