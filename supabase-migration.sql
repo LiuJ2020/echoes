@@ -153,7 +153,7 @@ CREATE OR REPLACE FUNCTION match_reflections (
   query_embedding VECTOR(768),
   match_threshold FLOAT,
   match_count INT,
-  user_id UUID
+  p_user_id UUID
 )
 RETURNS TABLE (
   id UUID,
@@ -191,7 +191,7 @@ BEGIN
     reflections.analysis_version,
     1 - (reflections.embedding <=> query_embedding) AS similarity
   FROM reflections
-  WHERE reflections.user_id = match_reflections.user_id
+  WHERE reflections.user_id = p_user_id
     AND reflections.embedding IS NOT NULL
     AND 1 - (reflections.embedding <=> query_embedding) > match_threshold
   ORDER BY reflections.embedding <=> query_embedding

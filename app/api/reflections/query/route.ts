@@ -32,7 +32,7 @@ export async function POST(request: NextRequest) {
         query_embedding: queryEmbedding,
         match_threshold: 0.5,
         match_count: limit,
-        user_id: user.id,
+        p_user_id: user.id,
       }
     );
 
